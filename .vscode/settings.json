@@ -1,0 +1,9 @@
+{
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"workbench.colorTheme": "Default Dark Modern",
+	"workbench.iconTheme": "material-icon-theme",
+	"[prisma]": {
+		"editor.defaultFormatter": "Prisma.prisma"
+	}
+}

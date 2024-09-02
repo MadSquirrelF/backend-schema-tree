@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  fullName   String     @default("No name")
+  avatarPath String     @default("/uploads/default-avatar.svg") @map("avatar_path")
+  phone      String     @default("")
+  email      String     @default("")
+  workPhone  String     @default("") @map("work_phone")
+  birthday   String     @default("")
+  position   String     @default("")
+  vksLink    String     @default("") @map("vks_link")
+  role       UserRole   @default(USER)
+  status     UserStatus @default(FREE)
+
+  schemas Schema[]
+  blocks  Block[]
+
+  @@map("user")
+}
+
+model Schema {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String @default("")
+  description String @default("")
+  tskp        String @default("")
+
+  audioUrl  String @default("") @map("audio_url")
+  videoUrl  String @default("") @map("video_url")
+  mailLink  String @default("") @map("mail_link")
+  cloudLink String @default("") @map("cloud_link")
+
+  employees User[]
+
+  children Block[]
+
+  @@map("schema")
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String @default("")
+  description String @default("")
+  tskp        String @default("")
+
+  audioUrl  String  @default("") @map("audio_url")
+  videoUrl  String  @default("") @map("video_url")
+  mailLink  String  @default("") @map("mail_link")
+  cloudLink String  @default("") @map("cloud_link")
+  schema    Schema? @relation(fields: [schemaId], references: [id])
+  schemaId  String? @map("schema_id")
+
+  employees User[]
+
+  // Дочерние блоки
+  children Block[] @relation("BlockChildren") // Указываем имя отношения
+
+  // Родительский блок
+  parent  Block?  @relation("BlockChildren", fields: [blockId], references: [id]) // Указываем имя отношения
+  blockId String? @map("block_id")
+
+  @@map("block")
+}
+
+enum UserStatus {
+  VACATION
+  HOSPITAL
+  FREE
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  DIRECTOR
+}
